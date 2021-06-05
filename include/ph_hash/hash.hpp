@@ -1,48 +1,39 @@
 #pragma once
 #include <ph_concepts/concepts.hpp>
 
-namespace ph::file {
 
-auto read (const char* path) -> char*
+
+constexpr auto kL1CacheCapacity = 32768; // The L1 Data cache size
+constexpr auto kSize = kL1CacheCapacity / sizeof(int);
+
+
+constexpr auto hash_function (const char* str) -> size_t {
+    // str = "abc"   ->    sum = 'a' + 'b' + 'c';    97 + 98 + 99
+    auto sum = size_t{0};
+    for (auto ptr = str; *ptr != '\0'; ++ptr)
+        sum += *ptr;
+    return sum;
+}
+
+
+
+template <typename T>
+concept Collection = requires (T& t)
 {
-    FILE* file = fopen (path, "rb");
-    
-    if (file == NULL)
-    {
-        fprintf (stderr, "Could not open file because of existance or access rights\"%s\".\n", path);
-        exit (74);
-    }
-    
-    // we seek to the very end using fseek()
-    fseek (file, 0L, SEEK_END);
-    
-    // we call ftell() which tells us how many bytes we are from the start of the file
-    size_t fileSize = ftell (file);
-    rewind (file);
-    
-    char* buffer = (char*) malloc (fileSize + 1);
-    
-    if (buffer == NULL)
-    {
-        fprintf (stderr, "Not enough memory to read \"%s\".\n", path);
-        exit (74);
-    }
-    
-    
-    size_t bytesRead = fread (buffer, sizeof (char), fileSize, file);
-    
-    if (bytesRead < fileSize)
-    {
-        fprintf (stderr, "Could not read file \"%s\".\n", path);
-        exit (74);
-    }
-    
-    buffer [bytesRead] = '\0';
-    
-    fclose (file);
-    return buffer;
-}
+    typename T::element_type;
+    typename T::size_type;
+    {T::size} -> same_as <typename T::size_type>;
+//    {t.begin ()} -> std::
+};
+
+template <typename T>
+concept Data_structure = true;
 
 
+template <typename T>
+concept Container = Data_structure <T> and requires ()
+{
+    true;
+};
 
-}
+
