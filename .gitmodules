@@ -1,0 +1,6 @@
+[submodule "dependencies/phake"]
+	path = dependencies/phake
+	url = https://github.com/phiwen96/phake
+[submodule "dependencies/ph_concepts"]
+	path = dependencies/ph_concepts
+	url = https://github.com/phiwen96/ph_concepts
