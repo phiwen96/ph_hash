@@ -9,7 +9,9 @@ project (
 )
 
 
-add_subdirectory (cmake/phake)
+
+
+add_subdirectory (dependencies/phake)
 
 # if (NOT TARGET ph_color)
 # 	add_subdirectory (dependencies/ph_color)
